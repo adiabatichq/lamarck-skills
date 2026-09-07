@@ -11,6 +11,8 @@ Understand and change the selected Personal System while preserving Lamarck's au
 
 Use the `lamarck` CLI. It discovers the running Desktop instance and selected Workspace without public URLs or tokens. Do not operate on private databases, Core routes, Guard state, sockets, or hidden Desktop files.
 
+If `lamarck` is unavailable, ask the user before installing it with `npm install -g @lamarck/cli`, then verify it with `lamarck --help`.
+
 Read [CLI lifecycle and authority](references/cli-lifecycle.md) before performing a mutation, handling a setup/trust boundary, or interpreting a lifecycle error.
 
 ## Establish Current State First

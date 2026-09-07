@@ -11,6 +11,8 @@ Use the capabilities already present in the selected Personal System. Keep the c
 
 Use the `lamarck` CLI. It discovers the running Lamarck Desktop instance and selected Workspace; do not request or construct Core URLs, bearer tokens, socket paths, database paths, or credentials.
 
+If `lamarck` is unavailable, ask the user before installing it with `npm install -g @lamarck/cli`, then verify it with `lamarck --help`.
+
 If Lamarck is not running or the wrong Workspace is selected, ask the user to open/select it in Desktop. Never search for and open Lamarck's private SQLite databases directly.
 
 Read [CLI and data](references/cli-and-data.md) before querying unfamiliar event data, inspecting table schemas, writing Files, or handling content references.

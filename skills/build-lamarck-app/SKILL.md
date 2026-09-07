@@ -11,6 +11,8 @@ Build ordinary JavaScript or TypeScript Apps while respecting the small stable c
 
 Use the public `lamarck` CLI to locate, create, inspect, and version Apps. Do not manually initialize an App package or its Git repository when `lamarck app create` is available.
 
+If `lamarck` is unavailable, ask the user before installing it with `npm install -g @lamarck/cli`, then verify it with `lamarck --help`.
+
 Read [CLI App lifecycle](references/cli-lifecycle.md) before creating, saving, restoring, refreshing, or archiving an App.
 
 1. Confirm Lamarck Desktop is running with the intended Workspace selected.

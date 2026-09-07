@@ -13,6 +13,8 @@ Use a Connector when the capability must observe a provider, device, host applic
 
 Before authoring, inspect installed Connectors and Sources:
 
+If `lamarck` is unavailable, ask the user before installing it with `npm install -g @lamarck/cli`, then verify it with `lamarck --help`.
+
 ```sh
 lamarck connector list --json
 lamarck source list --json

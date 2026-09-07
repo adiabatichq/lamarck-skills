@@ -11,6 +11,8 @@ Assess whether an existing App is correct, appropriately scoped, and credible in
 
 When the App is registered, start with:
 
+If `lamarck` is unavailable, ask the user before installing it with `npm install -g @lamarck/cli`, then verify it with `lamarck --help`.
+
 ```sh
 lamarck app inspect <app-id> --json
 lamarck app versions <app-id> --json

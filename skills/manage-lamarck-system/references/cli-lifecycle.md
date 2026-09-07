@@ -26,6 +26,8 @@ The CLI intentionally does not expose Source add, setup, auth/config editing, di
 
 ## Connectors
 
+Discover packages with `lamarck marketplace list --json`; `--kind app` or `--kind connector` filters the public catalog.
+
 ```sh
 lamarck connector list --json
 lamarck connector inspect <connector-id> --json
@@ -34,7 +36,7 @@ lamarck connector update <connector-id> --json
 lamarck connector remove <connector-id> --yes --json
 ```
 
-Install resolves the latest signed Marketplace release by exact package ID. The CLI does not provide Marketplace search or arbitrary release selection. Ask the user for the exact package when it cannot be established from trusted context.
+Install resolves the latest signed Marketplace release by exact package ID. Select it from the catalog or trusted context; the CLI does not provide semantic search or arbitrary release selection.
 
 Update applies only to a Marketplace-managed Connector whose installed package still matches its admitted release. A modified/custom package must be reviewed and handled through the human trust flow; do not overwrite it with a Marketplace update.
 
@@ -48,6 +50,7 @@ Custom or modified package approval is a Shell-only human action tied to the exa
 lamarck app list --json
 lamarck app inspect <app-id> --json
 lamarck app create <app-id> --name <name> --description <text> --json
+lamarck app create --from <namespace.package> [--as <local-app-id>] --json
 lamarck app save <app-id> -m <message> --author <author> --json
 lamarck app versions <app-id> --json
 lamarck app restore <app-id> <version> -m <message> --author <author> --json
@@ -68,7 +71,7 @@ lamarck app refresh <app-id> --yes --json
 
 Refresh discards that Capsule's unsaved App edits. It is not a general Host command and must never be used as a troubleshooting shortcut. Require an explicit request to discard those edits and inspect `hasUnrecordedChanges` first.
 
-The CLI does not provide a generic App start/stop command or Marketplace App search/install. Viewer-demand and Marketplace handoff remain Desktop flows.
+Marketplace templates use `app create --from`, which creates an editable local App and records `createdFrom` in its manifest. The CLI does not provide generic App start/stop or semantic Marketplace search.
 
 ## Schema changes
 

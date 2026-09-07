@@ -20,6 +20,8 @@ gh skill install adiabatichq/lamarck-skills --all --scope user
 
 Choose your agent when prompted, or add `--agent codex`, `--agent claude-code`, or another supported agent. If your GitHub CLI does not recognize `skill`, use the skills CLI above.
 
+The skills also require the public CLI; install it with `npm install -g @lamarck/cli` and verify it with `lamarck --help`.
+
 Lamarck Desktop must be running with the intended Workspace selected when using these skills.
 
 ## Skill model

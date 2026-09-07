@@ -13,6 +13,8 @@ Approved Connectors are trusted local Node code with ambient filesystem and netw
 
 Identify the exact package directory or release artifact and its expected identity. For an installed Connector, inspect public state without executing it:
 
+If `lamarck` is unavailable, ask the user before installing it with `npm install -g @lamarck/cli`, then verify it with `lamarck --help`.
+
 ```sh
 lamarck connector inspect <connector-id> --json
 ```
