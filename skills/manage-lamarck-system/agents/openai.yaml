@@ -1,0 +1,4 @@
+interface:
+  display_name: "Manage a Lamarck System"
+  short_description: "Inspect and change the current Lamarck System Shape"
+  default_prompt: "Use $manage-lamarck-system to inspect or safely change my selected Lamarck Personal System."

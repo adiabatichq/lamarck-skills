@@ -1,0 +1,4 @@
+interface:
+  display_name: "Use Lamarck"
+  short_description: "Work with data in an existing Lamarck System"
+  default_prompt: "Use $use-lamarck to answer this request with the capabilities already present in my selected Personal System."

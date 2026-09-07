@@ -1,0 +1,4 @@
+interface:
+  display_name: "Review a Lamarck App"
+  short_description: "Review Lamarck Apps for safety and correctness"
+  default_prompt: "Use $review-lamarck-app to review this App and report evidence-backed findings without modifying it."

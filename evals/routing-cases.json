@@ -1,0 +1,82 @@
+[
+  {
+    "prompt": "Summarize my meetings and workouts from the last seven days.",
+    "expectedSkills": ["use-lamarck"],
+    "reason": "The request uses data and capabilities already present."
+  },
+  {
+    "prompt": "Read my recent coding-agent events and save a short retrospective in Workspace Files.",
+    "expectedSkills": ["use-lamarck"],
+    "reason": "Timeline querying and a requested Workspace File are ordinary system use."
+  },
+  {
+    "prompt": "Show me which Sources and event types are available before we decide what to analyze.",
+    "expectedSkills": ["use-lamarck"],
+    "reason": "Inventory is in service of a use task, without a requested shape change."
+  },
+  {
+    "prompt": "My Oura Source stopped updating. Diagnose it and run one retry if it is ready.",
+    "expectedSkills": ["manage-lamarck-system"],
+    "reason": "Source health and execution are management operations."
+  },
+  {
+    "prompt": "Install the signed lamarck.telegram Connector package.",
+    "expectedSkills": ["manage-lamarck-system"],
+    "reason": "Installing an existing package changes System Shape but does not author code."
+  },
+  {
+    "prompt": "Restore my health-dashboard App to the version from yesterday.",
+    "expectedSkills": ["manage-lamarck-system"],
+    "reason": "Forward restore is an App lifecycle operation."
+  },
+  {
+    "prompt": "Create a Table for weekly summaries and submit its schema for approval.",
+    "expectedSkills": ["manage-lamarck-system"],
+    "reason": "Schema creation is an approval-gated System Shape change."
+  },
+  {
+    "prompt": "Build a Lamarck App that compares sleep and deep-work blocks.",
+    "expectedSkills": ["build-lamarck-app"],
+    "reason": "The request creates App implementation code."
+  },
+  {
+    "prompt": "Fix this Lamarck App: its manifest is invalid and the UI cannot query the Timeline.",
+    "expectedSkills": ["build-lamarck-app"],
+    "reason": "This is App contract and implementation repair, not an independent audit."
+  },
+  {
+    "prompt": "Build a Connector that polls the Example API and records account activity.",
+    "expectedSkills": ["build-lamarck-connector"],
+    "reason": "The request authors a new data-capture boundary."
+  },
+  {
+    "prompt": "Modify our custom calendar Connector to add a new declared event type.",
+    "expectedSkills": ["build-lamarck-connector"],
+    "reason": "Manifest/catalog/runtime code changes belong to Connector authoring."
+  },
+  {
+    "prompt": "Review this Lamarck App's permissions and Capsule assumptions before I share it.",
+    "expectedSkills": ["review-lamarck-app"],
+    "reason": "The user requests an independent App review."
+  },
+  {
+    "prompt": "Audit this custom Connector before I approve it in Desktop.",
+    "expectedSkills": ["review-lamarck-connector"],
+    "reason": "The exact trusted-code package needs a security and contract review."
+  },
+  {
+    "prompt": "Review this App, then fix every confirmed issue.",
+    "expectedSkills": ["review-lamarck-app", "build-lamarck-app"],
+    "reason": "The request explicitly combines independent review and authorized remediation."
+  },
+  {
+    "prompt": "The existing GitHub Source needs OAuth setup.",
+    "expectedSkills": ["manage-lamarck-system"],
+    "reason": "The skill should inspect readiness and hand credential setup to Desktop, not build a Connector."
+  },
+  {
+    "prompt": "Create a normal React landing page outside Lamarck.",
+    "expectedSkills": [],
+    "reason": "A generic website request should not activate Lamarck skills."
+  }
+]

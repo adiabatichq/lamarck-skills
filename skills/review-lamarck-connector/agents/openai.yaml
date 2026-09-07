@@ -1,0 +1,4 @@
+interface:
+  display_name: "Review a Lamarck Connector"
+  short_description: "Audit Connector packages before trust or release"
+  default_prompt: "Use $review-lamarck-connector to audit this exact Connector package without executing or approving it."

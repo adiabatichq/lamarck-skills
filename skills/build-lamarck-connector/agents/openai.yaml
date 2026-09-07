@@ -1,0 +1,4 @@
+interface:
+  display_name: "Build a Lamarck Connector"
+  short_description: "Create Connectors against Lamarck's runtime contract"
+  default_prompt: "Use $build-lamarck-connector to build a Connector for this data source in my selected Lamarck Workspace."

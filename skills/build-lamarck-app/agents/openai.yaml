@@ -1,0 +1,4 @@
+interface:
+  display_name: "Build a Lamarck App"
+  short_description: "Create Apps against Lamarck's supported contracts"
+  default_prompt: "Use $build-lamarck-app to build an App in my selected Lamarck Workspace."
