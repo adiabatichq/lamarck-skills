@@ -30,7 +30,7 @@ Allowed root fields are `manifestVersion`, `id`, `name`, `description`, optional
 - Timeline event timestamps are treated as epoch milliseconds and JSON payloads are parsed defensively.
 - Content references are resolved explicitly and non-resolved statuses have a usable fallback.
 - Event writes omit source/ID, use meaningful types, and use deterministic `externalId` when idempotency matters.
-- File writes use the VFS and real portable paths. Grants beyond `apps/<app-id>/` are exact or intentional prefixes.
+- File writes use the VFS and real root-relative paths valid on the local filesystem. Grants beyond `apps/<app-id>/` are exact or intentional prefixes; filename punctuation does not create a glob grant.
 - Table writes target only existing explicitly granted Tables, preserve primary keys, use transactions for coupled changes, and contain no DDL.
 - Every write permission is exercised by a reachable feature and no broader than necessary.
 

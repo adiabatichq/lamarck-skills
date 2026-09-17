@@ -127,7 +127,7 @@ Manifest permissions are capability grants, not a declaration of which Timeline 
 - an exact real path, such as `reviews/weekly.md`
 - a prefix ending in `/`, such as `reviews/`
 
-Paths always include their real filename and extension; there is no implicit `.md`. They are portable relative paths: no leading slash, backslash, `.` or `..` segment, control character, or platform-reserved path character. Do not grant reserved operational paths such as `.obsidian` or `.DS_Store`.
+Paths always include their real filename and extension; there is no implicit `.md`. They are root-relative paths with no leading slash, NUL, empty segment, `.` or `..` segment. Filename rules follow the local filesystem: macOS and Linux names containing `?`, `|`, `:`, backslashes, or Windows device names remain valid. Quote literal path operands in VFS commands; use `ls -0` for lossless enumeration of names containing control characters. Do not grant reserved operational paths such as `.obsidian` or `.DS_Store`.
 
 `permissions.writes.tables` lists concrete existing Tables the App may mutate. `"*"` is invalid. Do not include `events` or internal/system table names. Every Table must have an explicit non-null primary key, and primary-key values are immutable after insertion. App SQL cannot create a Table; DDL requires a Host-managed approval or provisioning path.
 
