@@ -99,18 +99,69 @@ function jsonValue(value: unknown): unknown {
 }
 ```
 
-Write a new observation without supplying source or ID:
+### Write events deliberately
+
+An event is durable, attributable evidence of meaningful activity or an observation. It lets future users and Apps understand what happened, what the user expressed, or what the App observed or delivered. Each `writeEvent` call adds to the user's permanent history.
+
+**Preserve intentionally submitted user content by default.** Messages, questions, search requests, instructions, submitted form values, corrections, and explicit decisions express something the user chose to provide. The App should not require an importance score or predict future usefulness before retaining them. Capture the actual submitted content and enough context to understand what it concerned. Use the submission/commit boundary rather than each keystroke, focus change, or navigation click.
+
+Exercise restraint with internal processing, UI mechanics, and duplicate data. Existing File/Table evidence may already retain the submitted content; reuse that evidence and add only missing interaction context or relationships. A saved result alone does not necessarily preserve the request that produced it.
+
+For other observations, decide whether they add lasting content or activity value. For every event, identify what evidence it adds and what the App actually observed, keeping inference separate.
+
+Positive examples, when this evidence is not already retained:
+
+| App activity | Evidence worth preserving | Future value |
+| --- | --- | --- |
+| The user asks an AI assistant to explain a document; the answer is shown only in the conversation UI. | The submitted question and the specific document version it concerns; then the answer actually delivered, linked to that request. | Recall what the user asked and which explanation they received. |
+| An AI writing App offers several drafts; the user selects one and supplies a reason. | The explicit selection and the user's stated reason, linked to the exact retained draft. | Explain a decision that the saved document alone does not capture. |
+| A planning App accepts a new constraint such as "keep Friday free" without changing a File or Table. | The submitted constraint and its relevant planning scope. | Preserve a preference expressed in that interaction for later planning. |
+
+Preserve a submitted request even if downstream AI processing or another operation later fails. Record it at submission rather than waiting for a successful result; separately preserve any meaningful outcome actually delivered to the user.
+
+Do not use `writeEvent` for operational logs, debug traces, loading/progress states, health checks, internal retries, or token/cost telemetry. Never use D0 as a dumping ground for request/response bodies or runtime snapshots.
+
+Record the user's actual words or selected action and parameters; do not present inferred intent as a user statement. Record delivery only at the App's observed delivery boundary. A model generating text does not establish that the App delivered it, and delivery does not establish that the user read or understood it. Internal model calls and component renders are not automatic event boundaries.
+
+Keep each event about the new activity. Do not repeat the whole conversation, model prompt, or App state on every interaction. File and Table changes already produce evidence: add an App event only when it contributes meaning such as a request, decision, or delivery and its relationship to the saved result. Where content is already retained, reference the exact retained event or content version instead of copying it again. A mutable path or row ID alone does not identify historical content. Never invent a reference or drop required content merely to make an event smaller.
+
+#### Example: an AI assistant answers a question
+
+The user submits "Which decisions did I make today?" The App reads Timeline evidence, uses AI to prepare an answer, and presents the answer in its conversation UI. The lasting evidence is the submitted request and the answer delivered to the user.
+
+Use `system.writeEvent` at those two App boundaries. The types and payloads below are App-defined examples, not a new System event contract. Message/delivery IDs and timestamps come from the actual App interaction; keep their identity, time, and content unchanged when retrying an event write.
 
 ```ts
-await system.writeEvent({
-  type: "replay.generated",
-  startedAt: Date.now(),
-  externalId: "replay:2026-07-22",
-  payload: { window: "today", eventCount: 418 },
+const { id: requestEventId } = await system.writeEvent({
+  type: "chat.message_submitted",
+  startedAt: submittedAt,
+  externalId: `message:${messageId}`,
+  payload: { conversationId, content: submittedText },
 });
 ```
 
-Use `externalId` for deterministic idempotency. Lamarck deduplicates non-null external IDs within the derived source. Do not call `writeEvent` with reserved lifecycle or audit namespaces such as `workspace.*`, `ddl.*`, `connector.*`, `app.created`, or `app.archived`.
+Later, after the App has committed the answer to its conversation UI, use that delivery handler to record the actual presented text. `requestEventId` links it to the submitted request:
+
+```ts
+await system.writeEvent({
+  type: "chat.answer_delivered",
+  startedAt: deliveredAt,
+  externalId: `delivery:${deliveryId}`,
+  payload: {
+    conversationId,
+    requestEventId,
+    content: deliveredText,
+  },
+});
+```
+
+`deliveredText` is the final App-presented answer, including any edits or formatting changes the App made after generation. For a streamed answer, capture the text actually presented when that response completes or is interrupted, with an explicit outcome for the App's observation. Choose event types and payloads for the App's domain; a non-chat App does not need conversation IDs or a conversation framework.
+
+Required fields are `type`, `startedAt` (epoch milliseconds), and JSON `payload`; `endedAt` and `externalId` are optional. The result is `{ ok: true, id }`. The Host binds source and producer provenance. Do not supply source or event ID. Surface write failures; do not claim content was recorded when its write failed.
+
+Use `externalId` for deterministic replay identity. Lamarck deduplicates non-null external IDs within the derived source. A genuinely new message, revision, or delivery needs its own identity even if its text matches an earlier event. Do not call `writeEvent` with reserved lifecycle or audit namespaces such as `workspace.*`, `ddl.*`, `connector.*`, `app.created`, `app.archived`, or the reserved `ai.turn` type.
+
+`writeEvent` does not automatically externalize large payloads into blobs. The current App SDK exposes `resolveContentRef` but no public blob-writing operation. For large content, use an appropriate supported File/Table persistence design and preserve an exact historical reference where available; do not invent a blob API, fabricate a ContentRef, or silently truncate the record.
 
 ## Workspace Files
 

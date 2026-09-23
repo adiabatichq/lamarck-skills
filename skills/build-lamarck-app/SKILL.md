@@ -57,7 +57,7 @@ For read-only analysis, keep both permission arrays empty. Add only the write gr
 
 ## Keep Durable State in Lamarck
 
-- Write immutable observations or durable activity with `system.writeEvent`.
+- Preserve content the user intentionally submits by default. Use `system.writeEvent` for that input and other durable activity when existing File/Table evidence does not already capture it. Never use D0 for operational logs or as a dumping ground for runtime data.
 - Write human-editable Workspace Files with `system.vfs.command`; use explicit filenames and intentional grants.
 - Write structured current or derived state only to an existing Table declared in `permissions.writes.tables`.
 - Use `system.transaction` when several Table statements must succeed together.
@@ -65,6 +65,8 @@ For read-only analysis, keep both permission arrays empty. Add only the write gr
 - Never treat runtime files, browser storage, or process memory as authoritative personal data.
 
 If a required Table does not exist, submit the schema change through the public management path and wait for human approval. Do not put DDL in App code.
+
+Record submitted messages, questions, instructions, corrections, and explicit decisions without requiring the App to judge their importance first. Preserve useful content delivered to the user at the App's observed delivery boundary. Exercise restraint with internal processing, UI mechanics, and duplicate context; record meaningful submissions rather than individual keystrokes or model invocations. Read [Writing events deliberately](references/system-data.md#write-events-deliberately) for the decision criteria and SDK example.
 
 ## Implement for the Capsule
 
