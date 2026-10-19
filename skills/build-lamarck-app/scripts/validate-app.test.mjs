@@ -107,3 +107,25 @@ async function writeFixture(t, directoryName, overrides = {}) {
   }, null, 2)}\n`);
   return appDir;
 }
+
+
+test("accepts existing manifest v1 AI access-source declarations", async t => {
+  const appDir = await writeFixture(t, "ai-job", {
+    runtime: { jobs: { summary: { command: ["node", "summary.mjs"] } } },
+    ai: { accessSources: { summary: { name: "AI for summaries", provider: "openai" } } },
+  });
+  await assert.doesNotReject(execFileAsync(process.execPath, [validator, appDir]));
+});
+
+for (const ai of [
+  null, {}, { accessSources: {} }, { accessSources: [], extra: true },
+  { accessSources: { "bad.reference": { name: "AI", provider: "openai" } } },
+  { accessSources: { summary: { name: "AI", provider: "openai", token: "secret" } } },
+  { accessSources: { summary: { name: " padded ", provider: "openai" } } },
+  { accessSources: { summary: { name: "AI", provider: "" } } },
+]) {
+  test(`rejects malformed AI declaration ${JSON.stringify(ai)}`, async t => {
+    const appDir = await writeFixture(t, "bad-ai", { ai });
+    await assert.rejects(execFileAsync(process.execPath, [validator, appDir]), error => error.code === 1 && /ai/.test(error.stderr));
+  });
+}

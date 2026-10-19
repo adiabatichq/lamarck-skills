@@ -111,6 +111,12 @@ Do not persist returned tokens, log them, place them in events/config/state, or 
 
 Approved Connectors are trusted local Node code and may have ambient filesystem/network access. That is not permission to scan unrelated files, contact unrelated endpoints, spawn hidden tools, or download executable code. Keep access proportional to the package's stated purpose.
 
+## Temporary D0 subscriptions
+
+During `run(context)`, `context.subscribe({ sql, params? }, handler)` offers the same temporary SQL listener contract as App `system.subscribe`. The read-only query returns one `id` column; the handler receives the original D0 event with decoded payload. It starts at current appends, provides no historical catch-up or persistent identity, and grants no general Connector query or write authority. There is no function predicate.
+
+Keep `run(context)` active while listening (normally a watch Source), observe `listener.done` rejection, and call `listener.cancel()` when `context.signal` aborts. A completed/aborted runner loses its listeners; do not spawn a detached listener or promise automatic retry. This is not per-run event input: only supported concrete poll Sources are offered as persistent Trigger targets, and Services are not targets. User schedules/SQL policies belong to Console or Host `lamarck trigger`, not an internal Connector scheduler.
+
 ## Cancellation and modes
 
 Honor `context.signal` in fetches, waits, loops, child processes, and platform adapters.

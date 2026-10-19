@@ -13,7 +13,7 @@ Use the sections relevant to the App. Absence of a feature means its specialized
 
 ## 2. Strict Manifest V1
 
-Allowed root fields are `manifestVersion`, `id`, `name`, `description`, optional `createdFrom`, `runtime`, and `permissions`. Unknown fields at every fixed-shape level are rejected.
+Allowed root fields are `manifestVersion`, `id`, `name`, `description`, optional `createdFrom` and `ai`, `runtime`, and `permissions`. Unknown fields at every fixed-shape level are rejected.
 
 - `manifestVersion` is exactly `1`.
 - At least one of `runtime.ui`, `runtime.services`, or `runtime.jobs` exists.
@@ -21,6 +21,9 @@ Allowed root fields are `manifestVersion`, `id`, `name`, `description`, optional
 - UI port is an integer from 1 through 65535, and the command binds that exact port without fallback.
 - `permissions.writes.files` and `.tables` are present arrays, including for read-only Apps.
 - There is no invented `runtime.agents`, schedule field, Host command, or read-permission namespace.
+
+- Optional `ai.accessSources` references have exactly trimmed `name`/`provider`, no credentials or invented providers, and handle unbound setup explicitly.
+- App/Service enablement and Trigger SQL/cron settings are managed externally; no new manifest policy fields or schema/protocol upgrade.
 
 ## 3. Authority and data access
 
@@ -41,7 +44,8 @@ Allowed root fields are `manifestVersion`, `id`, `name`, `description`, optional
 - `package-lock.json` is present, current, and uses supported integrity-pinned dependency forms.
 - Runtime filesystem, browser storage, and process memory hold only disposable caches/preferences, not authoritative personal data.
 - UI survives reload by re-querying Lamarck and presents useful loading, empty, denied, and error states.
-- Services stay alive intentionally; jobs terminate; neither hides an independent daemon.
+- Services stay alive intentionally and tolerate Host stop; Jobs read only their bound `system.jobInput()` and terminate. Trigger cancellation and cleanup must work; neither workload hides an independent daemon.
+- Temporary `system.subscribe({ sql, params? }, handler)` listeners start from current appends and are canceled on shutdown; do not assume historical catch-up, persistence, automatic retry or exactly-once business effects.
 
 ## 5. Privacy and product behavior
 

@@ -98,7 +98,7 @@ Manifest rules:
 
 Allowed fields are exactly:
 
-- root: `manifestVersion`, `id`, `name`, `description`, `createdFrom`, `runtime`, `permissions`
+- root: `manifestVersion`, `id`, `name`, `description`, `createdFrom`, `runtime`, `permissions`, optional `ai`
 - createdFrom: `packageId`, `releaseId`
 - runtime: `ui`, `services`, `jobs`
 - UI: `command`, `port`
@@ -107,6 +107,16 @@ Allowed fields are exactly:
 - permissions.writes: `files`, `tables`
 
 There is no `runtime.agents` namespace.
+
+## Optional AI access-source declarations
+
+`ai` contains exactly one non-empty `accessSources` object. Each reference matches `^[a-z0-9][a-z0-9-]*$` and contains exactly trimmed, non-empty `name` and `provider` strings:
+
+```json
+"ai": { "accessSources": { "summary": { "name": "AI for summaries", "provider": "openai" } } }
+```
+
+Console binds each reference to a configured source; do not put credentials or concrete source IDs in this declaration. The declaration's provider, selected model provider and bound source provider must agree. Missing setup does not block App installation/startup; an AI invocation fails with `source_configuration_required`. Services/Jobs must handle this explicitly. Manifest and System protocol remain v1.
 
 ## Workloads
 
@@ -117,6 +127,8 @@ There is no `runtime.agents` namespace.
 | `jobs.<id>` | Explicit finite work | Expected to exit on completion |
 
 Commands run with the App root as the working directory. Prefer `npm run ...` scripts so the package and lockfile describe the executable surface.
+
+Services run independently of UI while Host, App and Service enablement all admit them. App/Service settings default enabled on installation and are managed through Console or Host CLI, not manifest fields. Jobs are finite Trigger invocations; read the immutable invocation through `system.jobInput()` and exit to report completion. Event SQL and cron settings belong to Triggers, not the manifest. See [CLI lifecycle](cli-lifecycle.md) and [System SDK](system-data.md).
 
 ## Permissions
 

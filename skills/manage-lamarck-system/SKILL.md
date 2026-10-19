@@ -27,6 +27,8 @@ lamarck query "SELECT name, sql FROM sqlite_schema WHERE type = 'table' ORDER BY
 lamarck file ls -la -- .
 ```
 
+For App execution, Host `app inspect` shows enablement, UI, Services and active Jobs; `app activity` reads temporary diagnostics. Use Host `trigger` for event/cron policy and persistent run history. See the lifecycle reference for enable/disable and cancellation commands.
+
 Inspect only the relevant Source, Connector, App, File path, or table. Keep Sources, Apps, Files, and Tables independent; an App consuming Source data does not own that Source.
 
 ## Make the Smallest Requested Change

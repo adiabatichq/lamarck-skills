@@ -62,9 +62,52 @@ lamarck app archive <app-id> --yes --json
 
 Archive removes an App from the active System Shape. It is not part of ordinary build cleanup. Use it only when explicitly requested after checking runtime state and unrecorded changes.
 
+## App runtime management (Host only)
+
+App runtime management requires `@lamarck/cli` 0.1.4 or later and Desktop 0.1.16 or later.
+
+```sh
+lamarck app enable <app-id> --json
+lamarck app disable <app-id> --json
+lamarck app service enable <app-id> <service-id> --json
+lamarck app service disable <app-id> <service-id> --json
+lamarck app inspect <app-id> --json
+lamarck app activity <app-id> --json
+```
+
+App and Service enablement are separate settings. Installation defaults both to enabled. An enabled Service runs only while its App and Host are enabled/active. Disabling an App fences new UI, Service and Job launches and joins current workload/UI cleanup; child Service settings and Trigger history are preserved. Enabling an App restores individually enabled Services; it does not open UI, create a Job invocation, or replay missed work. A Service toggle affects only that declared Service. Use IDs from `app inspect`, not display labels.
+
+Host `app inspect` adds `runtime.enabled`, UI state, per-Service enablement/state, active Jobs with run IDs, and current failure/cleanup information. Unknown policy is null, not disabled. A successful toggle confirms the existing lifecycle operation; inspect separately for readiness or backoff.
+
+`app activity` reads sanitized temporary Service/Job diagnostics, not D0 or persistent execution history. Retention is bounded to eight records per App for up to an hour after completion and is lost on Host restart. CLI output keeps at most 64 KiB of UTF-8 output per record; `droppedBytes` reports omitted output. Empty output means no retained evidence, not proof that no work ran.
+
+## Triggers (Host only)
+
+```sh
+lamarck trigger targets --json
+lamarck trigger list --json
+lamarck trigger inspect <trigger-id> --json
+lamarck trigger create --name Daily --target app:<app-id>:job:<job-id> --cron '0 9 * * *' --timezone Asia/Taipei --json
+lamarck trigger create --config '<settings-json>' --json
+lamarck trigger create --file trigger-settings.json --json
+lamarck trigger preview <trigger-id> --limit 5 --json
+lamarck trigger update <trigger-id> --name 'New name' --revision <revision> --json
+lamarck trigger enable <trigger-id> --json
+lamarck trigger disable <trigger-id> --json
+lamarck trigger runs <trigger-id> --limit 50 --json
+lamarck trigger cancel <run-id> --json
+lamarck trigger delete <trigger-id> --yes --json
+```
+
+Discover targets first: declared App Jobs and supported concrete poll Sources. UI and Services are not Trigger targets. Conditions use event SQL (`--sql 'SELECT id FROM events WHERE type = ?' --params '["example.event"]'`) or cron plus IANA timezone. Inline `--config` and UTF-8 JSON `--file` are equivalent alternatives, capped at 16 KiB. Creation defaults to disabled; `--enabled` opts in. Use a revision fence when updating settings read earlier.
+
+Preview does not execute or advance consumption. Enablement and condition/target edits start future evaluation from now. Disabling pauses evaluation and pending runs; already running invocations may finish. Delete cancels pending work and retains history. `trigger cancel` cancels one pending/running invocation, including an App Job; there is no separate CLI Job launch/retry/replay command. Job history belongs to `trigger runs`; actual processes and cleanup belong to Capsule and appear in App inspection/activity. Temporary SDK subscriptions are separate and have no persistent identity.
+
+Use local help to check advertised commands. Help labels operations read/write; `file` is mixed because `ls`, `cat`, and `stat` read while the other verbs mutate. These labels do not grant authority. New commands require both a compatible CLI package and running Desktop; `CLI_UNSUPPORTED_COMMAND` is not permission to call private interfaces. Managed Capsules cannot administer App enablement, Services, diagnostics, or Triggers.
+
 ## Interface limits
 
 - The CLI has no generic App start/stop command. Viewer-demand remains Desktop-owned.
-- Marketplace App discovery and install are Desktop handoff flows.
+- Marketplace discovery uses `lamarck marketplace list --kind app`; `app create --from <package-id>` creates an editable local App.
 - A successful lifecycle command does not prove Capsule launch or a real data path works.
 - Do not use private Git commands as a substitute for Lamarck version operations.

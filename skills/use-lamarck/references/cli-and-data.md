@@ -31,6 +31,22 @@ lamarck app inspect <app-id> --json
 
 App inspection describes workloads, write permissions, lifecycle health, runtime activity, and the caller-visible package path. Inspecting an App does not mean its private UI is controllable through the CLI.
 
+App runtime management requires `@lamarck/cli` 0.1.4 or later and Desktop 0.1.16 or later.
+
+Host App inspection includes App enablement, UI state, each Service's enablement/state, active Job run IDs, and failure/cleanup information. `lamarck app activity <app-id> --json` reads recent sanitized temporary Service/Job diagnostics, capped at eight records per App, up to one hour after completion, with a 64 KiB output tail per record and `droppedBytes`. It is not durable history and disappears on Host restart.
+
+For existing execution policy/history, Host CLI can read:
+
+```sh
+lamarck trigger targets --json
+lamarck trigger list --json
+lamarck trigger inspect <trigger-id> --json
+lamarck trigger runs <trigger-id> --limit 50 --json
+lamarck trigger preview <trigger-id> --limit 5 --json
+```
+
+Preview does not execute anything. Jobs are declared App workloads invoked by Triggers; Services are not targets. Use the management skill for requested enable/disable, schedule edits or cancellation. These management reads are unavailable inside a managed Capsule. Inspect `lamarck --help` for local availability; unsupported commands require compatible CLI/Desktop releases, not private-route workarounds.
+
 ### Files
 
 `lamarck file` is rooted at Workspace Files, not at the Host filesystem:

@@ -30,11 +30,33 @@ system.transaction(statements)
 system.vfs.command(command, options?)
 system.vfs.open(path)
 system.writeEvent(event)
+system.subscribe({ sql, params? }, handler)
+system.jobInput()
 ```
 
 The Host supplies the transport. Never construct a Core URL, Guard token, socket path, source, or App identity.
 
 SQL parameters may be positional arrays or named objects. Values are `null`, strings, numbers, or encoded blobs. Parameterize values; never interpolate user or event data into SQL.
+
+## Runtime subscriptions and Job input
+
+```ts
+const listener = await system.subscribe(
+  { sql: "SELECT id FROM events WHERE type = ?", params: ["example.event"] },
+  async event => { await handleEvent(event); },
+);
+// On workload shutdown:
+await listener.cancel();
+await listener.done;
+```
+
+Use a single read-only SQLite query returning one column named `id`. Handlers receive the original D0 event with decoded payload, not projected columns. Each call independently observes eligible new appends from now, including late imported observations. Updating joined data or querying history does not trigger delivery. Listeners are temporary, have no stable name, and must be registered again after restart. There is no function-predicate variant or automatic retry; evaluation, transport or handler failure rejects `done`. Handle that rejection. Delivery splits into bounded batches; do not assume exactly-once external effects.
+
+For a declared Job only, `await system.jobInput()` returns `{ version: 1, triggerId, runId, revision, input }`. `input.kind` is `event` (original `input.event`) or `schedule` (`input.scheduledAt` in UTC milliseconds). The Host binds one immutable input to that exact Job activation; do not pass selectors or try to read another run. Successful exit completes the invocation; nonzero exit fails it. Cancellation/completion revokes input authority. Guard write grants still apply. This API is preview; protocol and manifest remain v1. Persistent policies/history are managed by Console or Host `lamarck trigger`, never through the SDK.
+
+## AI through configured access sources
+
+Use `system.ai.listOptions()` to discover caller-visible configured sources/models, or declare `ai.accessSources` in the manifest and use the bound reference as `accessSource`. With the App's model selection, pass `system.ai.languageModel({ model, accessSource })` to the Vercel AI SDK; embeddings use `system.ai.embeddingModel`. Provider, model and source must agree. `source_configuration_required` means the user must bind/setup that reference in Console; do not retry indefinitely, request credentials in App code, or call provider URLs directly. See the [manifest contract](app-contract.md) for declarations. AI calls do not automatically write user content into Timeline; the deliberate recording guidance below still applies.
 
 ## Discover before adapting
 

@@ -15,6 +15,7 @@ const ROOT_FIELDS = new Set([
   "createdFrom",
   "runtime",
   "permissions",
+  "ai",
 ]);
 const RUNTIME_FIELDS = new Set(["ui", "services", "jobs"]);
 const UI_FIELDS = new Set(["command", "port"]);
@@ -119,6 +120,8 @@ function validateManifest(value) {
     }
   }
 
+  if (Object.hasOwn(value, "ai")) validateAi(value.ai);
+
   if (!isObject(value.runtime)) {
     errors.push("runtime must be an object");
   } else {
@@ -148,6 +151,27 @@ function validateManifest(value) {
       unknownFields(value.permissions.writes, WRITE_PERMISSION_FIELDS, "permissions.writes");
       validateFileGrants(value.permissions.writes.files);
       validateTableGrants(value.permissions.writes.tables);
+    }
+  }
+}
+
+function validateAi(value) {
+  if (!isObject(value) || Object.keys(value).length !== 1 || !Object.hasOwn(value, "accessSources")) {
+    errors.push("ai must contain exactly one accessSources object");
+    return;
+  }
+  if (!isObject(value.accessSources) || Object.keys(value.accessSources).length === 0) {
+    errors.push("ai.accessSources must be a non-empty object");
+    return;
+  }
+  for (const [reference, definition] of Object.entries(value.accessSources)) {
+    if (!ENTRY_ID.test(reference)) errors.push(`invalid ai.accessSources reference ${JSON.stringify(reference)}`);
+    if (!isObject(definition) || Object.keys(definition).length !== 2 || !Object.hasOwn(definition, "name") || !Object.hasOwn(definition, "provider")) {
+      errors.push(`ai.accessSources.${reference} must contain exactly name and provider`);
+      continue;
+    }
+    if ([definition.name, definition.provider].some(field => typeof field !== "string" || !field.length || field.trim() !== field)) {
+      errors.push(`ai.accessSources.${reference} name and provider must be non-empty, trimmed strings`);
     }
   }
 }
