@@ -29,8 +29,9 @@ Preserve working user code and unrecorded changes. App lifecycle commands do not
 
 - Read [App contract](references/app-contract.md) before creating an App or changing `manifest.json`, workloads, dependencies, or permissions.
 - Read [System data](references/system-data.md) before calling `@lamarck/system`, querying Timeline events or Tables, resolving content, or writing events, Files, or Table rows.
+- Read [AI and Computer Use](references/ai-and-computer-use.md) when adding model calls, App tools, or desktop automation through the SDK.
 - Read [Capsule runtime](references/capsule-runtime.md) before adding dependencies, relying on network or filesystem behavior, or debugging a build or launch failure.
-- For a new App, read all four references before implementation.
+- For a new App, read the lifecycle, manifest, data, and Capsule references before implementation.
 
 Do not infer unsupported fields or APIs from product internals. If the installed runtime rejects something these references allow, treat the runtime error as authoritative, inspect the installed version, and report the contract drift. Do not work around it through private Core or Host interfaces.
 
@@ -51,7 +52,7 @@ Keep the interface, workflow, and product opinions in the App. Use Lamarck for c
 4. Treat `started_at`, `ended_at`, and `created_at` as epoch milliseconds.
 5. Parse JSON defensively because clients may return JSON columns as strings.
 6. Resolve content references in App code with `system.resolveContentRef`; do not assume referenced content is inline.
-7. Default to private, local presentation. Do not send personal history to an external service.
+7. Default to private, local presentation. Send personal history to a configured AI source only as needed by a user-requested feature.
 
 For read-only analysis, keep both permission arrays empty. Add only the write grants actually required by the implementation.
 

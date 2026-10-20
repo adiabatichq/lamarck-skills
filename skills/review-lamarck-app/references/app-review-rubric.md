@@ -47,15 +47,23 @@ Allowed root fields are `manifestVersion`, `id`, `name`, `description`, optional
 - Services stay alive intentionally and tolerate Host stop; Jobs read only their bound `system.jobInput()` and terminate. Trigger cancellation and cleanup must work; neither workload hides an independent daemon.
 - Temporary `system.subscribe({ sql, params? }, handler)` listeners start from current appends and are canceled on shutdown; do not assume historical catch-up, persistence, automatic retry or exactly-once business effects.
 
-## 5. Privacy and product behavior
+## 5. AI and Computer Use
+
+- Model calls use `system.ai` with an explicit model and configured access source or declared source reference. Setup, source permissions, and model capabilities are respected; credentials and direct provider requests are absent from App code.
+- Subscription tool callbacks use `system.ai.withTools()`. Tools passed to this helper declare `inputSchema` and `execute`, run under the App's existing grants, and do not depend on unsupported approval/provider tools or output schemas.
+- Streams finish inside their `withTools()` callbacks, and cancellation reaches active model calls. Scoped models and tools are not retained for use after the callback returns.
+- Desktop automation uses `system.computer.withTools()` for a user-requested feature, handles unavailable/denied setup, preserves its returned instructions, and selects a model supporting tools and screenshot inputs. Actions are sequential; the same abort signal reaches the Computer Use scope and model call. Failed actions are surfaced without blind retries.
+- Computer Use relies on Lamarck's scope permission and macOS Accessibility/Screen Recording permissions. The App does not install a driver/MCP server or invent manifest permissions for this capability.
+
+## 6. Privacy and product behavior
 
 - The UI reveals only detail needed for its stated task and avoids dumping raw transcripts, health history, or attention data by default.
-- No personal data is sent to an external service; Capsule egress assumptions are absent.
+- Personal data passed to a configured AI source is limited to the user-requested feature. Unrelated transmission and assumptions of direct Capsule egress are absent.
 - Export/write behavior is visible and aligned with the user's action.
 - Empty or incomplete Source history is not represented as a definitive conclusion.
 - Dates, time zones, units, and aggregation windows are explicit enough to avoid misleading results.
 
-## 6. Correctness and verification
+## 7. Correctness and verification
 
 - Data transformations handle nulls, missing fields, stringified JSON, duplicates, and boundary timestamps.
 - Expensive query/parsing work is bounded and not repeated inside render loops.
@@ -63,7 +71,7 @@ Allowed root fields are `manifestVersion`, `id`, `name`, `description`, optional
 - Production build and declared package scripts succeed with the retained lockfile.
 - A real Lamarck launch exercises the SDK path; a normal browser preview alone is insufficient.
 
-## 7. Publication readiness
+## 8. Publication readiness
 
 For a Marketplace candidate, additionally check that the package is a reusable template rather than a dump of one user's state:
 

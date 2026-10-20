@@ -69,6 +69,8 @@ Therefore:
 
 App-private local communication may be used between declared App workloads, but it must not become a path around System authority or a durable store.
 
+AI model access and Computer Use are Host-mediated SDK capabilities. They do not give the App process general network or Host access. Use `system.ai` and `system.computer` for these features; see [AI and Computer Use](ai-and-computer-use.md) for their setup and scope contracts.
+
 ## UI behavior
 
 The UI command must bind the exact port in `manifest.runtime.ui.port` and stay alive. Use a strict port setting so a collision fails visibly instead of moving to a different port.

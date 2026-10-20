@@ -5,6 +5,8 @@ Contract baseline: `@lamarck/system` protocol V1, Timeline events, Workspace Fil
 ## Contents
 
 - Import and operations
+- Runtime subscriptions and Job input
+- AI through configured access sources
 - Discover before adapting
 - Timeline events
 - Workspace Files
@@ -32,6 +34,11 @@ system.vfs.open(path)
 system.writeEvent(event)
 system.subscribe({ sql, params? }, handler)
 system.jobInput()
+system.ai.listOptions()
+system.ai.languageModel({ model, accessSource })
+system.ai.embeddingModel({ model, accessSource })
+system.ai.withTools({ model, accessSource, tools }, callback)
+system.computer.withTools(callback, options?)
 ```
 
 The Host supplies the transport. Never construct a Core URL, Guard token, socket path, source, or App identity.
@@ -56,7 +63,7 @@ For a declared Job only, `await system.jobInput()` returns `{ version: 1, trigge
 
 ## AI through configured access sources
 
-Use `system.ai.listOptions()` to discover caller-visible configured sources/models, or declare `ai.accessSources` in the manifest and use the bound reference as `accessSource`. With the App's model selection, pass `system.ai.languageModel({ model, accessSource })` to the Vercel AI SDK; embeddings use `system.ai.embeddingModel`. Provider, model and source must agree. `source_configuration_required` means the user must bind/setup that reference in Console; do not retry indefinitely, request credentials in App code, or call provider URLs directly. See the [manifest contract](app-contract.md) for declarations. AI calls do not automatically write user content into Timeline; the deliberate recording guidance below still applies.
+Use `system.ai` with the Vercel AI SDK for model calls and App tools. `system.computer.withTools()` supplies scoped desktop-control tools. Read [AI and Computer Use](ai-and-computer-use.md) for source/model selection, tool callbacks, streaming, cancellation, and permission requirements. See the [manifest contract](app-contract.md#optional-ai-access-source-declarations) for optional source references. AI and Computer Use do not automatically write user content into Timeline; the deliberate recording guidance below still applies.
 
 ## Discover before adapting
 
