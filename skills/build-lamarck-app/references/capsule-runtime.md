@@ -100,3 +100,16 @@ Handle that error as a clear empty/error state during development. Verify the re
 | External request fails | Runtime egress is intentionally unavailable; capture through a Connector |
 
 Fix the declared App contract. Do not weaken isolation, inject a raw Host path, or add an undisclosed network side channel to make a demo pass.
+
+## Experiment mode
+
+Host-owned `exp` mode preserves the existing Capsule and App identity. Reads,
+subscriptions, AI calls, memory, UI/stdout and disposable scratch files remain
+available under existing permissions; AI may incur costs. Durable D0/D2 and
+Workspace File writes, including the implicit App file namespace, fail
+explicitly. A mutating transaction fails atomically. The managed CLI retains
+only its existing reads, and Computer Use rejects before permission/session
+creation. App code, manifests, environment variables and tool inputs cannot
+select or override this policy. See [CLI lifecycle](cli-lifecycle.md#experiment-mode-host-only)
+for Host inspection and stopped-only switching. Never fabricate write results
+or treat a rejected write as saved data.
