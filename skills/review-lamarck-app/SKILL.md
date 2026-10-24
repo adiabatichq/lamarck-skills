@@ -20,6 +20,8 @@ lamarck app versions <app-id> --json
 
 Use the inspected `path` as the package root. If the App is not registered, review only an exact package path supplied or confirmed by the user. Preserve unrecorded changes and distinguish the working package from the last saved version.
 
+Record the inspected `runtime.mode` when testing execution. An `exp` run can validate reads and AI, but cannot validate successful writes in `normal` mode; expected write denials are not App defects by themselves.
+
 Read [App review rubric](references/app-review-rubric.md) before assessing manifest authority, SDK/data behavior, Capsule assumptions, dependencies, or Marketplace readiness.
 
 ## Review Evidence, Not Intentions
@@ -31,7 +33,7 @@ Read [App review rubric](references/app-review-rubric.md) before assessing manif
 5. Run existing static checks, tests, or builds only when they can be executed safely with the current trusted dependencies. Do not install packages, rewrite a lockfile, or mutate the App merely to complete a review unless the user authorizes it.
 6. If a real Capsule launch or data path was not exercised, mark that as unverified rather than inferring success from a browser build.
 
-Do not save, restore, refresh, archive, or change permissions during review. Do not invoke private Core/Guard interfaces to gain more evidence.
+Do not save, restore, refresh, archive, change execution mode, or change permissions during review. Do not invoke private Core/Guard interfaces to gain more evidence.
 
 ## Report Findings First
 

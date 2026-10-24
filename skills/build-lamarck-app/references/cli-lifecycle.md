@@ -83,6 +83,8 @@ Host `app inspect` adds `runtime.enabled`, UI state, per-Service enablement/stat
 
 ## Experiment mode (Host only)
 
+Use a compatible CLI/Desktop pair that advertises `app mode`; the command requires CLI 0.1.5 or later.
+
 Experiment mode is one persistent Host setting, `normal` (default) or `exp`,
 independent of App/Service enablement and App versions. Host inspection exposes
 `runtime.mode`; the existing Console App settings show an **Experiment mode**

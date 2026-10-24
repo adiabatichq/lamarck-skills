@@ -29,6 +29,8 @@ lamarck file ls -la -- .
 
 For App execution, Host `app inspect` shows enablement, UI, Services and active Jobs; `app activity` reads temporary diagnostics. Use Host `trigger` for event/cron policy and persistent run history. See the lifecycle reference for enable/disable and cancellation commands.
 
+Host `app inspect` also exposes `runtime.mode`. For requested read-only experiments, use [Experiment mode](references/cli-lifecycle.md#experiment-mode-host-only): change `normal`/`exp` only while the App is fully stopped. Switching mode does not change enablement or start work.
+
 Inspect only the relevant Source, Connector, App, File path, or table. Keep Sources, Apps, Files, and Tables independent; an App consuming Source data does not own that Source.
 
 ## Make the Smallest Requested Change

@@ -54,9 +54,13 @@ Keep the interface, workflow, and product opinions in the App. Use Lamarck for c
 6. Resolve content references in App code with `system.resolveContentRef`; do not assume referenced content is inline.
 7. Default to private, local presentation. Send personal history to a configured AI source only as needed by a user-requested feature.
 
-For read-only analysis, keep both permission arrays empty. Add only the write grants actually required by the implementation.
+For read-only analysis, keep both permission arrays empty. Add only the write grants actually required by the implementation. Empty arrays alone do not prevent event writes or writes to the implicit App Files namespace.
+
+For a user-requested experiment without Workspace writes, use the Host's existing `exp` mode. Inspect `runtime.mode` and follow [stopped-only mode switching](references/cli-lifecycle.md#experiment-mode-host-only); mode is not a manifest field or SDK flag. Reads, subscriptions and AI remain available, AI may incur costs, and Computer Use is unavailable.
 
 ## Keep Durable State in Lamarck
+
+The recording guidance below applies in `normal` mode. In `exp`, respect explicit write denials, keep results temporary, and do not claim they were saved or bypass the restriction.
 
 - Preserve content the user intentionally submits by default. Use `system.writeEvent` for that input and other durable activity when existing File/Table evidence does not already capture it. Never use D0 for operational logs or as a dumping ground for runtime data.
 - Write human-editable Workspace Files with `system.vfs.command`; use explicit filenames and intentional grants.

@@ -45,6 +45,8 @@ The Host supplies the transport. Never construct a Core URL, Guard token, socket
 
 SQL parameters may be positional arrays or named objects. Values are `null`, strings, numbers, or encoded blobs. Parameterize values; never interpolate user or event data into SQL.
 
+The Host's `exp` mode permits existing reads, subscriptions and AI, but rejects `writeEvent`, Table/File mutations and Computer Use. Transactions containing a mutation fail atomically. The writing guidance below applies in `normal` mode; a denied write in `exp` is not saved data. Mode is not an SDK option; see [Experiment mode](cli-lifecycle.md#experiment-mode-host-only) for inspection and switching.
+
 ## Runtime subscriptions and Job input
 
 ```ts

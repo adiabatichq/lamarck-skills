@@ -94,6 +94,8 @@ Host `app inspect` adds `runtime.enabled`, UI state, per-Service enablement/stat
 
 ## Experiment mode (Host only)
 
+Use a compatible CLI/Desktop pair that advertises `app mode`; the command requires CLI 0.1.5 or later.
+
 Experiment mode is one persistent Host setting, `normal` (default) or `exp`,
 independent of App/Service enablement and App versions. Host inspection exposes
 `runtime.mode`; the existing Console App settings show an **Experiment mode**
@@ -174,4 +176,6 @@ Treat these as decisions, not invitations to bypass the interface:
 - `CONNECTOR_MODIFIED`: preserve local code and route to review/custom trust flow.
 - `CONNECTOR_MARKETPLACE_UNAVAILABLE`: report that signed resolution is unavailable.
 - `APP_VERSION_CONFLICT`: re-inspect current App state before proposing another save/restore.
+- `APP_MODE_REQUIRES_STOP`: stop the App through existing controls and resolve workload cleanup before switching; closing a viewer alone is insufficient.
+- `APP_EXPERIMENT_READ_ONLY`: the workload is in exp mode; respect the denied mutation rather than retrying through another interface or silently switching mode.
 - `SCHEMA_REQUEST_REJECTED`: report the rejection; do not modify the database directly.

@@ -36,6 +36,8 @@ Allowed root fields are `manifestVersion`, `id`, `name`, `description`, optional
 - File writes use the VFS and real root-relative paths valid on the local filesystem. Grants beyond `apps/<app-id>/` are exact or intentional prefixes; filename punctuation does not create a glob grant.
 - Table writes target only existing explicitly granted Tables, preserve primary keys, use transactions for coupled changes, and contain no DDL.
 - Every write permission is exercised by a reachable feature and no broader than necessary.
+- In Host `exp` mode, UI, Services, Jobs and their descendants retain existing reads, subscriptions and AI but cannot persist App events, Table/File changes, or managed CLI mutations. This includes AI tool callbacks and the implicit App Files namespace; mixed mutating transactions fail atomically.
+- Rejected writes are surfaced as denied, never reported as saved or bypassed. Exp is a Host setting, not an App-controlled manifest/SDK flag or separate data store. Host version/schema actions and Trigger execution history still retain their normal records, and AI may incur costs; exp does not promise zero side effects or a test snapshot.
 
 ## 4. Capsule compatibility
 
@@ -54,6 +56,7 @@ Allowed root fields are `manifestVersion`, `id`, `name`, `description`, optional
 - Streams finish inside their `withTools()` callbacks, and cancellation reaches active model calls. Scoped models and tools are not retained for use after the callback returns.
 - Desktop automation uses `system.computer.withTools()` for a user-requested feature, handles unavailable/denied setup, preserves its returned instructions, and selects a model supporting tools and screenshot inputs. Actions are sequential; the same abort signal reaches the Computer Use scope and model call. Failed actions are surfaced without blind retries.
 - Computer Use relies on Lamarck's scope permission and macOS Accessibility/Screen Recording permissions. The App does not install a driver/MCP server or invent manifest permissions for this capability.
+- Computer Use is unavailable in `exp` before permission/session creation. A read-only exp review does not establish that writes or Computer Use work in `normal` mode.
 
 ## 6. Privacy and product behavior
 
