@@ -56,7 +56,7 @@ Keep the interface, workflow, and product opinions in the App. Use Lamarck for c
 
 For read-only analysis, keep both permission arrays empty. Add only the write grants actually required by the implementation. Empty arrays alone do not prevent event writes or writes to the implicit App Files namespace.
 
-For a user-requested experiment without Workspace writes, use the Host's existing `exp` mode. Inspect `runtime.mode` and follow [stopped-only mode switching](references/cli-lifecycle.md#experiment-mode-host-only); mode is not a manifest field or SDK flag. Reads, subscriptions and AI remain available, AI may incur costs, and Computer Use is unavailable.
+For a user-requested read-only experiment, use the Host's existing `exp` mode. Inspect `runtime.mode` and follow [stopped-only mode switching](references/cli-lifecycle.md#experiment-mode-host-only); mode is not a manifest field or SDK flag. Reads, subscriptions and AI remain available, AI may incur costs, and Computer Use is unavailable. Connecting experimental output to Tables for normal use may require small code changes; writes need separate validation in `normal` mode.
 
 ## Keep Durable State in Lamarck
 
